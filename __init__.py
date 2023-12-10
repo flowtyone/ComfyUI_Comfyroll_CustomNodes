@@ -34,7 +34,7 @@ from .animation_nodes.lists import *
 from .animation_nodes.utils import *
 from .animation_nodes.cyclers import *
 
-LIVE_NODE_CLASS_MAPPINGS = {
+NODE_CLASS_MAPPINGS = {
     ### Misc Nodes
     "CR Image Output": CR_ImageOutput,
     "CR Integer Multiple": CR_IntegerMultipleOf,
@@ -210,7 +210,7 @@ LIVE_NODE_CLASS_MAPPINGS = {
     "CR Output Flow Frames": CR_OutputFlowFrames,       
 }
 
-LIVE_NODE_DISPLAY_NAME_MAPPINGS = {
+NODE_DISPLAY_NAME_MAPPINGS = {
     ### Misc Nodes
     "CR Image Output": "💾 CR Image Output",
     "CR Integer Multiple": "⚙️ CR Integer Multiple",
@@ -386,19 +386,19 @@ LIVE_NODE_DISPLAY_NAME_MAPPINGS = {
     "CR Output Flow Frames": "⌨️ CR Output Flow Frames",  
 }
 
-INCLUDE_DEV_NODES = False
-
-try:
-    from .dev_node_mappings import DEV_NODE_CLASS_MAPPINGS, DEV_NODE_DISPLAY_NAME_MAPPINGS
-    if INCLUDE_DEV_NODES:
-        NODE_CLASS_MAPPINGS = {**DEV_NODE_CLASS_MAPPINGS, **LIVE_NODE_CLASS_MAPPINGS}
-        NODE_DISPLAY_NAME_MAPPINGS = {**DEV_NODE_DISPLAY_NAME_MAPPINGS, **LIVE_NODE_DISPLAY_NAME_MAPPINGS}
-        print("\033[34mComfyroll Custom Nodes: \033[92mDev Nodes Loaded\033[0m")
-    else:
-        NODE_CLASS_MAPPINGS = LIVE_NODE_CLASS_MAPPINGS
-        NODE_DISPLAY_NAME_MAPPINGS = LIVE_NODE_DISPLAY_NAME_MAPPINGS
-except ImportError:
-    NODE_CLASS_MAPPINGS = LIVE_NODE_CLASS_MAPPINGS
-    NODE_DISPLAY_NAME_MAPPINGS = LIVE_NODE_DISPLAY_NAME_MAPPINGS
-    
-print("\033[34mComfyroll Custom Nodes: \033[92mLoaded\033[0m")
+# INCLUDE_DEV_NODES = False
+#
+# try:
+#     from .dev_node_mappings import DEV_NODE_CLASS_MAPPINGS, DEV_NODE_DISPLAY_NAME_MAPPINGS
+#     if INCLUDE_DEV_NODES:
+#         NODE_CLASS_MAPPINGS = {**DEV_NODE_CLASS_MAPPINGS, **LIVE_NODE_CLASS_MAPPINGS}
+#         NODE_DISPLAY_NAME_MAPPINGS = {**DEV_NODE_DISPLAY_NAME_MAPPINGS, **LIVE_NODE_DISPLAY_NAME_MAPPINGS}
+#         print("\033[34mComfyroll Custom Nodes: \033[92mDev Nodes Loaded\033[0m")
+#     else:
+#         NODE_CLASS_MAPPINGS = LIVE_NODE_CLASS_MAPPINGS
+#         NODE_DISPLAY_NAME_MAPPINGS = LIVE_NODE_DISPLAY_NAME_MAPPINGS
+# except ImportError:
+#     NODE_CLASS_MAPPINGS = LIVE_NODE_CLASS_MAPPINGS
+#     NODE_DISPLAY_NAME_MAPPINGS = LIVE_NODE_DISPLAY_NAME_MAPPINGS
+#
+# print("\033[34mComfyroll Custom Nodes: \033[92mLoaded\033[0m")
