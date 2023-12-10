@@ -236,8 +236,8 @@ class CR_XYFromFolder:
         if trigger == False:
             return((), False, show_help, )
             
-        input_dir = folder_paths.output_directory
-        image_path = os.path.join(input_dir, image_folder)
+        #input_dir = folder_paths.output_directory
+        image_path = image_folder#os.path.join(input_dir, image_folder)
         file_list = sorted(os.listdir(image_path), key=lambda s: sum(((s, int(n)) for s, n in re.findall(r'(\D+)(\d+)', 'a%s0' % s)), ()))
         
         sample_frames = []
