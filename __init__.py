@@ -39,19 +39,21 @@ print("------------------------------------------------")
 print("\033[34mComfyroll Custom Nodes v1.55 : \033[92m 165 Nodes Loaded\033[0m")
 print("------------------------------------------------")  
 
-import shutil
-import folder_paths
-import os
+WEB_DIRECTORY = "js"
 
-comfy_path = os.path.dirname(folder_paths.__file__)
-comfyroll_nodes_path = os.path.join(os.path.dirname(__file__))
-
-js_dest_path = os.path.join(comfy_path, "web", "extensions", "Comfyroll")
-os.makedirs(js_dest_path, exist_ok=True)
-
-files_to_copy = ["test.js"]
-
-for file in files_to_copy:
-    js_src_path = os.path.join(comfyroll_nodes_path, "js", file)
-    shutil.copy(js_src_path, js_dest_path)
+# import shutil
+# import folder_paths
+# import os
+#
+# comfy_path = os.path.dirname(folder_paths.__file__)
+# comfyroll_nodes_path = os.path.join(os.path.dirname(__file__))
+#
+# js_dest_path = os.path.join(comfy_path, "web", "extensions", "Comfyroll")
+# os.makedirs(js_dest_path, exist_ok=True)
+#
+# files_to_copy = ["test.js"]
+#
+# for file in files_to_copy:
+#     js_src_path = os.path.join(comfyroll_nodes_path, "js", file)
+#     shutil.copy(js_src_path, js_dest_path)
 
