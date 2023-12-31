@@ -56,13 +56,21 @@ class CR_LoadAnimationFrames:
     def INPUT_TYPES(s):
         #if not os.path.exists(s.input_dir):
             #os.makedirs(s.input_dir)
-        image_folder = [name for name in os.listdir(s.input_dir) if os.path.isdir(os.path.join(s.input_dir,name)) and len(os.listdir(os.path.join(s.input_dir,name))) != 0]
+        input_dir = folder_paths.get_input_directory()
+        files = [f for f in os.listdir(input_dir) if os.path.isfile(os.path.join(input_dir, f))]
         return {"required":
-                    {"image_sequence_folder": (sorted(image_folder), ),
+                    {"image_sequence_folder": (sorted(files), ),
                      "start_index": ("INT", {"default": 1, "min": 1, "max": 10000}),
                      "max_frames": ("INT", {"default": 1, "min": 1, "max": 10000})
                      }
                 }
+
+    @classmethod
+    def VALIDATE_INPUTS(s, **kwargs):
+        if not folder_paths.exists_annotated_filepath(kwargs.get("image_sequence_folder")):
+            return "Invalid image file: {}".format(kwargs.get("image_sequence_folder"))
+
+        return True
 
     RETURN_TYPES = ("IMAGE", "STRING", )
     RETURN_NAMES = ("IMAGE", "show_help", )
@@ -70,7 +78,7 @@ class CR_LoadAnimationFrames:
     CATEGORY = icons.get("Comfyroll/Animation/IO")
 
     def load_image_sequence(self, image_sequence_folder, start_index, max_frames):
-        image_path = os.path.join(self.input_dir, image_sequence_folder)
+        image_path = folder_paths.get_annotated_filepath(image_sequence_folder) #os.path.join(self.input_dir, image_sequence_folder)
         file_list = sorted(os.listdir(image_path), key=lambda s: sum(((s, int(n)) for s, n in re.findall(r'(\D+)(\d+)', 'a%s0' % s)), ()))
         sample_frames = []
         sample_frames_mask = []
@@ -93,21 +101,29 @@ class CR_LoadFlowFrames:
     
         sort_methods = ["Index", "Alphabetic"]
         #sort_methods = ["Date modified", "Alphabetic", "Index"]
-        input_dir = folder_paths.input_directory
-
-        input_folders = [name for name in os.listdir(input_dir) if os.path.isdir(os.path.join(input_dir,name)) and len(os.listdir(os.path.join(input_dir,name))) != 0]
+        input_dir = folder_paths.get_input_directory()
+        files = [f for f in os.listdir(input_dir) if os.path.isfile(os.path.join(input_dir, f))]
 
         return {"required":
-                    {"input_folder": (sorted(input_folders), ),
+                    {"input_folder": (sorted(files), ),
                      "sort_by": (sort_methods, ),
                      "current_frame": ("INT", {"default": 0, "min": 0, "max": 10000}),
                      "skip_start_frames": ("INT", {"default": 0, "min": 0, "max": 10000}),
                      },
                 "optional":
-                    {"input_path": ("STRING", {"default": '', "multiline": False}),
+                    {
+                        #"input_path": ("STRING", {"default": '', "multiline": False}),
                      "file_pattern": ("STRING", {"default": '*.png', "multiline": False}),
                     } 
                 }
+
+
+    @classmethod
+    def VALIDATE_INPUTS(s, **kwargs):
+        if not folder_paths.exists_annotated_filepath(kwargs.get("input_folder")):
+            return "Invalid image file: {}".format(kwargs.get("input_folder"))
+
+        return True
 
     CATEGORY = icons.get("Comfyroll/Animation/IO")
 
@@ -123,13 +139,15 @@ class CR_LoadFlowFrames:
         current_frame = current_frame + skip_start_frames
         print(f"[Info] CR Load Flow Frames: current_frame {current_frame}")
             
-        if input_path != '':
-            if not os.path.exists(input_path):
-                print(f"[Warning] CR Load Flow Frames: The input_path `{input_path}` does not exist")
-                return ("", )
-            image_path = os.path.join('', input_path)
-        else:
-            image_path = os.path.join(input_dir, input_folder)
+        # if input_path != '':
+        #     if not os.path.exists(input_path):
+        #         print(f"[Warning] CR Load Flow Frames: The input_path `{input_path}` does not exist")
+        #         return ("", )
+        #     image_path = os.path.join('', input_path)
+        # else:
+        #     image_path = os.path.join(input_dir, input_folder)
+
+        image_path = folder_paths.get_annotated_filepath(input_folder)
 
         print(f"[Info] CR Load Flow Frames: ComfyUI Input directory is `{image_path}`")
         

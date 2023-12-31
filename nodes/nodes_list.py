@@ -143,17 +143,25 @@ class CR_LoadImageList:
 
     @classmethod
     def INPUT_TYPES(s):
+
+        input_dir = folder_paths.get_input_directory()
+        files = [f for f in os.listdir(input_dir) if os.path.isfile(os.path.join(input_dir, f))]
     
-        input_dir = folder_paths.input_directory
-        image_folder = [name for name in os.listdir(input_dir) if os.path.isdir(os.path.join(input_dir,name))] 
-    
-        return {"required": {"input_folder": (sorted(image_folder), ),
+        return {"required": {"input_folder": (sorted(files), ),
                              "start_index": ("INT", {"default": 0, "min": 0, "max": 9999}),
                              "max_images": ("INT", {"default": 1, "min": 1, "max": 9999}),
                },
-               "optional": {"input_path": ("STRING", {"default": '', "multiline": False}),     
+               "optional": {
+                   #"input_path": ("STRING", {"default": '', "multiline": False}),
                }
         }
+
+    @classmethod
+    def VALIDATE_INPUTS(s, **kwargs):
+        if not folder_paths.exists_annotated_filepath(kwargs.get("input_folder")):
+            return "Invalid image file: {}".format(kwargs.get("input_folder"))
+
+        return True
 
     RETURN_TYPES = ("IMAGE", "STRING", )
     RETURN_NAMES = ("IMAGE", "show_help", )
@@ -164,15 +172,16 @@ class CR_LoadImageList:
     def make_list(self, start_index, max_images, input_folder, input_path=None):
 
         # Set the input path
-        if input_path != '' and input_path is not None:
-            if not os.path.exists(input_path):
-                print(f"[Warning] CR Image List: The input_path `{input_path}` does not exist")
-                return ("",)  
-            in_path = input_path
-        else:
-            input_dir = folder_paths.input_directory
-            in_path = os.path.join(input_dir, input_folder)
+        # if input_path != '' and input_path is not None:
+        #     if not os.path.exists(input_path):
+        #         print(f"[Warning] CR Image List: The input_path `{input_path}` does not exist")
+        #         return ("",)
+        #     in_path = input_path
+        # else:
+        #     input_dir = folder_paths.input_directory
+        #     in_path = os.path.join(input_dir, input_folder)
 
+        in_path = folder_paths.get_annotated_filepath(input_folder)
         # Check if the folder is empty
         if not os.listdir(in_path):
             print(f"[Warning] CR Image List: The folder `{in_path}` is empty")
@@ -210,17 +219,25 @@ class CR_LoadImageListPlus:
 
     @classmethod
     def INPUT_TYPES(s):
+
+        input_dir = folder_paths.get_input_directory()
+        files = [f for f in os.listdir(input_dir) if os.path.isfile(os.path.join(input_dir, f))]
     
-        input_dir = folder_paths.input_directory
-        image_folder = [name for name in os.listdir(input_dir) if os.path.isdir(os.path.join(input_dir,name))] 
-    
-        return {"required": {"input_folder": (sorted(image_folder), ),
+        return {"required": {"input_folder": (sorted(files), ),
                              "start_index": ("INT", {"default": 0, "min": 0, "max": 9999}),
                              "max_images": ("INT", {"default": 1, "min": 1, "max": 9999}),
                },
-               "optional": {"input_path": ("STRING", {"default": '', "multiline": False}),     
+               "optional": {
+                   #"input_path": ("STRING", {"default": '', "multiline": False}),
                }
         }
+
+    @classmethod
+    def VALIDATE_INPUTS(s, **kwargs):
+        if not folder_paths.exists_annotated_filepath(kwargs.get("input_folder")):
+            return "Invalid image file: {}".format(kwargs.get("input_folder"))
+
+        return True
 
     RETURN_TYPES = ("IMAGE", "MASK", "INT", "STRING", "INT", "INT", "INT", "STRING", )
     RETURN_NAMES = ("IMAGE", "MASK", "index", "filename", "width", "height", "list_length", "show_help", )
@@ -231,14 +248,16 @@ class CR_LoadImageListPlus:
     def make_list(self, start_index, max_images, input_folder, input_path=None, vae=None):
 
         # Set the input path
-        if input_path != '' and input_path is not None:
-            if not os.path.exists(input_path):
-                print(f"[Warning] CR Image List: The input_path `{input_path}` does not exist")
-                return ("",)  
-            in_path = input_path
-        else:
-            input_dir = folder_paths.input_directory
-            in_path = os.path.join(input_dir, input_folder)
+        # if input_path != '' and input_path is not None:
+        #     if not os.path.exists(input_path):
+        #         print(f"[Warning] CR Image List: The input_path `{input_path}` does not exist")
+        #         return ("",)
+        #     in_path = input_path
+        # else:
+        #     input_dir = folder_paths.input_directory
+        #     in_path = os.path.join(input_dir, input_folder)
+
+        in_path = folder_paths.get_annotated_filepath(input_folder) #os.path.join(input_dir, input_folder)
 
         # Check if the folder is empty
         if not os.listdir(in_path):

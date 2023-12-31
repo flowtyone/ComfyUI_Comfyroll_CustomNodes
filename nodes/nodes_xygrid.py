@@ -239,12 +239,12 @@ class CR_XYFromFolder:
 
     @classmethod
     def INPUT_TYPES(cls) -> dict[str, t.Any]:
-    
-        input_dir = folder_paths.output_directory
-        image_folder = [name for name in os.listdir(input_dir) if os.path.isdir(os.path.join(input_dir,name))] 
+
+        input_dir = folder_paths.get_input_directory()
+        files = [f for f in os.listdir(input_dir) if os.path.isfile(os.path.join(input_dir, f))]
         
         return {"required":
-                    {"image_folder": (sorted(image_folder), ),
+                    {"image_folder": (sorted(files), ),
                      "start_index": ("INT", {"default": 1, "min": 0, "max": 10000}),
                      "end_index": ("INT", {"default": 1, "min": 1, "max": 10000}),
                      "max_columns": ("INT", {"default": 1, "min": 1, "max": 10000}),
@@ -258,6 +258,13 @@ class CR_XYFromFolder:
             }                     
                 }
 
+    @classmethod
+    def VALIDATE_INPUTS(s, **kwargs):
+        if not folder_paths.exists_annotated_filepath(kwargs.get("input_folder")):
+            return "Invalid image file: {}".format(kwargs.get("input_folder"))
+
+        return True
+
     RETURN_TYPES = ("IMAGE", "BOOLEAN", "STRING", )
     RETURN_NAMES = ("IMAGE", "trigger", "show_help", )
     FUNCTION = "load_images"
@@ -270,7 +277,7 @@ class CR_XYFromFolder:
             return((), False, show_help, )
             
         input_dir = folder_paths.output_directory
-        image_path = os.path.join(input_dir, image_folder)
+        image_path = folder_paths.get_annotated_filepath(image_folder) #os.path.join(input_dir, image_folder)
         file_list = sorted(os.listdir(image_path), key=lambda s: sum(((s, int(n)) for s, n in re.findall(r'(\D+)(\d+)', 'a%s0' % s)), ()))
         
         sample_frames = []
@@ -323,17 +330,18 @@ class CR_XYSaveGridImage:
     @classmethod
     def INPUT_TYPES(cls):
     
-        output_dir = folder_paths.output_directory
-        output_folders = [name for name in os.listdir(output_dir) if os.path.isdir(os.path.join(output_dir,name))]
+        #output_dir = folder_paths.output_directory
+        #output_folders = [name for name in os.listdir(output_dir) if os.path.isdir(os.path.join(output_dir,name))]
     
         return {
             "required": {"mode": (["Save", "Preview"],),
-                         "output_folder": (sorted(output_folders), ),
+                         #"output_folder": (sorted(output_folders), ),
                          "image": ("IMAGE", ),
                          "filename_prefix": ("STRING", {"default": "CR"}),
                          "file_format": (["webp", "jpg", "png", "tif"],),
             },
-            "optional": {"output_path": ("STRING", {"default": '', "multiline": False}),
+            "optional": {
+                #"output_path": ("STRING", {"default": '', "multiline": False}),
                          "trigger": ("BOOLEAN", {"default": False},),                         
             }
         }
@@ -343,7 +351,7 @@ class CR_XYSaveGridImage:
     OUTPUT_NODE = True
     CATEGORY = icons.get("Comfyroll/XY Grid") 
             
-    def save_image(self, mode, output_folder, image, file_format, output_path='', filename_prefix="CR", trigger=False):
+    def save_image(self, mode, image, file_format, output_folder="", output_path='', filename_prefix="CR", trigger=False):
 
         if trigger == False:
             return ()
