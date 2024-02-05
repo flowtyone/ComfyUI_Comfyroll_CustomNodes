@@ -16,7 +16,7 @@ class CR_StringToNumber:
 
     @classmethod
     def INPUT_TYPES(s):
-        return {"required": {"text": ("STRING", {"multiline": False, "default": "text"}),
+        return {"required": {"text": ("STRING", {"multiline": False, "default": "text", "forceInput": True}),
                 "round_integer": (["round", "round down","round up"],),
                 },
         }
@@ -56,28 +56,6 @@ class CR_StringToNumber:
         show_help = "https://github.com/Suzie1/ComfyUI_Comfyroll_CustomNodes/wiki/Conversion-Nodes#cr-string-to-number"
         return (int_out, float_out, show_help,)
         
-#---------------------------------------------------------------------------------------------------------------------# 
-class CR_TextListToString:
-    @classmethod
-    def INPUT_TYPES(s):
-        return {"required": {
-                "text_list": ("STRING", {"forceInput": True}),
-                    },
-                }
-
-    RETURN_TYPES = ("STRING", "STRING", )
-    RETURN_NAMES = ("STRING", "show_help", )
-    FUNCTION = "joinlist"
-    CATEGORY = icons.get("Comfyroll/Utils/Conversion")
-
-    def joinlist(self, text_list):
-    
-        string_out = " ".join(text_list)
-
-        show_help = "https://github.com/Suzie1/ComfyUI_Comfyroll_CustomNodes/wiki/Conversion-Nodes#cr-text-list-to-string"
-
-        return (string_out, show_help, )
-
 #---------------------------------------------------------------------------------------------------------------------#  
 # based on Repeater node by pythongosssss 
 class CR_StringToCombo:
@@ -107,13 +85,43 @@ class CR_StringToCombo:
         show_help = "https://github.com/Suzie1/ComfyUI_Comfyroll_CustomNodes/wiki/Conversion-Nodes#cr-string-to-combo"
 
         return (text_list, show_help, )
+
+#---------------------------------------------------------------------------------------------------------------------#  
+# based on Repeater node by pythongosssss 
+class CR_StringToBoolean:
+
+    @classmethod
+    def INPUT_TYPES(cls):
+        return {
+            "required": {
+                "text": ("STRING", {"multiline": False, "default": "", "forceInput": True}),
+            },
+        }
+
+    RETURN_TYPES = ("BOOLEAN", "STRING", )
+    RETURN_NAMES = ("BOOLEAN", "show_help", )
+    FUNCTION = "convert"
+    CATEGORY = icons.get("Comfyroll/Utils/Conversion")
+
+    def convert(self, text):
+    
+        show_help = "https://github.com/Suzie1/ComfyUI_Comfyroll_CustomNodes/wiki/Conversion-Nodes#cr-string-to-boolean"
+
+        if text == "True" or text == "true":
+            boolean_out = True
+        if text == "False" or text == "false":
+            boolean_out = False
+        else:
+            pass
+
+        return (boolean_out, show_help, )
         
 #---------------------------------------------------------------------------------------------------------------------------------------------------#
 # Cloned from Mikey Nodes
 class CR_IntegerToString:
     @classmethod
     def INPUT_TYPES(s):
-        return {"required": {"int_": ("INT", {"default": 0, "min": 0, "max": 0xffffffffffffffff}),
+        return {"required": {"int_": ("INT", {"default": 0, "min": 0, "max": 0xffffffffffffffff, "forceInput": True}),
                 }
         }
 
@@ -127,11 +135,12 @@ class CR_IntegerToString:
         return (f'{int_}', show_help, )
 
 #---------------------------------------------------------------------------------------------------------------------------------------------------#
-# Cloned from Mikey Nodes
+# based on Mikey Nodes
 class CR_FloatToString:
+
     @classmethod
     def INPUT_TYPES(s):
-        return {"required": {"float_": ("FLOAT", {"default": 0.0, "min": 0.0, "max": 1000000.0}),
+        return {"required": {"float_": ("FLOAT", {"default": 0.0, "min": 0.0, "max": 1000000.0, "forceInput": True}),
                 }        
         }
 
@@ -145,10 +154,14 @@ class CR_FloatToString:
         return (f'{float_}', show_help, )
 
 #---------------------------------------------------------------------------------------------------------------------
+# based on Mikey Nodes
 class CR_FloatToInteger:
+
     @classmethod
     def INPUT_TYPES(cls):
-        return {"required": {"_float": ("FLOAT", {"default": 0.0})}}
+        return {"required": {"_float": ("FLOAT", {"default": 0.0, "forceInput": True, "forceInput": True}),
+                }
+        }
 
     RETURN_TYPES = ("INT", "STRING", )
     RETURN_NAMES = ("INT", "show_help", )
@@ -159,29 +172,6 @@ class CR_FloatToInteger:
         show_help = "https://github.com/Suzie1/ComfyUI_Comfyroll_CustomNodes/wiki/Conversion-Nodes#cr-float-to-integer"
         return (int(_float), show_help, )
         
-#---------------------------------------------------------------------------------------------------------------------------------------------------#
-# This node is used to convert type Seed to type INT
-class CR_SeedToInt:
-    def __init__(self):
-        pass
-
-    @classmethod
-    def INPUT_TYPES(cls):
-        return {
-            "required": {
-                "seed": ("SEED", ),
-            }
-        }
-
-    RETURN_TYPES = ("INT", "STRING", )
-    RETURN_NAMES = ("INT", "show_help", )
-    FUNCTION = "seed_to_int"
-    CATEGORY = icons.get("Comfyroll/Utils/Conversion")
-
-    def seed_to_int(self, seed):
-        show_help = "https://github.com/Suzie1/ComfyUI_Comfyroll_CustomNodes/wiki/Conversion-Nodes#cr-seed-to-int"
-        return (seed.get('seed'), show_help, )
- 
 #---------------------------------------------------------------------------------------------------------------------#
 # MAPPINGS
 #---------------------------------------------------------------------------------------------------------------------#
@@ -189,13 +179,12 @@ class CR_SeedToInt:
 # 10 nodes published
 '''
 NODE_CLASS_MAPPINGS = {   
-    "CR String To Number":CR_StringToNumber,
-    "CR String To Combo":CR_StringToCombo,    
-    "CR Float To String":CR_FloatToString,
-    "CR Float To Integer":CR_FloatToInteger,
-    "CR Integer To String":CR_IntegerToString,    
-    "CR Text List To String":CR_TextListToString,
-    "CR Seed to Int": CR_SeedToInt, 
+    "CR String To Number": CR_StringToNumber,
+    "CR String To Combo": CR_StringToCombo,    
+    "CR Float To String": CR_FloatToString,
+    "CR Float To Integer": CR_FloatToInteger,
+    "CR Integer To String": CR_IntegerToString,
+    "CR String To Boolean": CR_StringToBoolean,    
 }
 '''    
      
